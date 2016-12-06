@@ -77,19 +77,20 @@ def interface(firebase_space, firebase_path, firebase_index_path, firebase_count
     @description
     """
 
-    fb = firebase.FirebaseApplication(firebase_space, authentication=create_custom_token('nerdfiles@gmail.com', False))
-    # data = fb.get(firebase_space, firebase_path, params={'pretty': 'true', 'shallow': 'true'})
-
     data = currencies(openexchangerates_key, 'USD')
-    # print data
-    # print firebase_space
-    # print firebase_path
-    fb.put(firebase_space, firebase_path, data)
 
     # counter_path, counter_key = os.path.split(firebase_counter_path)
     # fb.put(counter_path,
     #         counter_key,
     #         len(data))
+
+    try:
+      # fb = firebase.FirebaseApplication(firebase_space, authentication=create_custom_token('<email>@gmail.com', False))
+      fb = firebase.FirebaseApplication(firebase_space, None)
+      fb.put(firebase_path, firebase_index_path, data)
+    except Exception as e:
+      print "Error writing to Firebase: " + e.message
+      return None
 
 
 if __name__ == "__main__":
