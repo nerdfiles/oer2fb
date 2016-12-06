@@ -28,22 +28,33 @@ class JSONEncoder(json.JSONEncoder):
 
 
 def load_service_account():
-  with open('./service-account.json') as f:
+  with open('service-account.json') as f:
     file_contents = json.load(f)
-    return json.dumps(file_contents, cls=JSONEncoder)
+  return file_contents
 
 
 def load_private_key():
-  with open('./exrates-a6f3b089b509.json') as f:
+  with open('exrates-a6f3b089b509.json') as f:
     file_contents = json.load(f)
-    return json.dumps(file_contents, cls=JSONEncoder)
+    return file_contents
 
 
 def create_custom_token(uid, is_premium_account):
+
+  try:
+    secret = load_private_key()
+  except Exception as e:
+    print "Error loading private key: " + e.message
+
+  try:
+    sa = load_service_account()
+  except Exception as e:
+    print "Error loading account data: " + e.message
+
   try:
     payload = {
-      "iss": load_service_account().email,
-      "sub": load_service_account().email,
+      "iss": sa['email'],
+      "sub": sa['email'],
       "aud": "https://identitytoolkit.googleapis.com/google.identity.identitytoolkit.v1.IdentityToolkit",
       "uid": uid,
       "claims": {
@@ -51,7 +62,6 @@ def create_custom_token(uid, is_premium_account):
       }
     }
     exp = datetime.timedelta(minutes=60)
-    secret = load_private_key()
     return jwt.encode(payload, secret, algorithm="RS256")
   except Exception as e:
     print "Error creating custom token: " + e.message
@@ -85,9 +95,14 @@ def interface(firebase_space, firebase_path, firebase_index_path, firebase_count
     #         len(data))
 
     try:
-      # fb = firebase.FirebaseApplication(firebase_space, authentication=create_custom_token('<email>@gmail.com', False))
+      p = create_custom_token('<email>@gmail.com', False)
+    except Exception as e:
+      print "Unable to create token"
+
+    try:
+      # fb = firebase.FirebaseApplication(firebase_space, authentication=p)
       fb = firebase.FirebaseApplication(firebase_space, None)
-      fb.put(firebase_path, firebase_index_path, data)
+      # fb.put(firebase_path, firebase_index_path, data)
     except Exception as e:
       print "Error writing to Firebase: " + e.message
       return None
