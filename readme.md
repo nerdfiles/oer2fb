@@ -1,6 +1,6 @@
 # openexchangerates2firebase
 
-    $ python oer2fb.py --firebase-space https://exrates-<some_id>.firebaseio.com --firebase-path currencies --openexchangerates-key <api_key>
+    $ python __init__.py --firebase-space https://exrates-<some_id>.firebaseio.com --firebase-path currencies --openexchangerates-key <api_key>
 
 ## Support
 
