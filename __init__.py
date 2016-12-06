@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    $ python oer2fb.py --firebase-space https://exrates.firebaseio.com --firebase-path currencies <api_key>
+    $ python oer2fb.py --firebase-space https://exrates-<some_id>.firebaseio.com --firebase-path currencies <api_key>
 """
 
 from argparse import ArgumentParser
